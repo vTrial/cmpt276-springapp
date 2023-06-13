@@ -1,15 +1,20 @@
 package com.example.demo.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.models.User;
 import com.example.demo.models.UserRepository;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 
 
@@ -38,12 +43,16 @@ public class UsersController {
     }
 
     // data coming from form would be a PostMapping
-    @GetMapping(value="/users/add")
-    public String AddUsers() {
+    @PostMapping(value="/users/add")
+    public String AddUser(@RequestParam Map<String, String> newuser, HttpServletResponse response) {
         // get name, size, password from form ...
-        User newuser = new User("henry","1234",25);
-        userRepo.save(newuser);
-        return "users/added";
+        System.out.println("ADD user");
+        String newName = newuser.get("name");
+        String newPassword = newuser.get("password");
+        int newSize = Integer.parseInt(newuser.get("size"));
+        userRepo.save(new User(newName, newPassword, newSize));
+        response.setStatus(201);
+        return "users/addedUser";
     }
     
 }
