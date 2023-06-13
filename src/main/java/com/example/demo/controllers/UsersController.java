@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,11 +36,42 @@ public class UsersController {
     @GetMapping("/users/view/{uid}")
     public String getUser(Model model, @PathVariable String uid){
         
-        System.out.println("GET User " + uid);
-        // call db
-   
-        model.addAttribute("user");
-        return "showUser";
+    System.out.println("GET User " + uid);
+    Integer uidInt = Integer.parseInt(uid);
+    // Call the data access layer to find the user by uid
+    User user = userRepo.findByUid(uidInt).get(0);
+
+    model.addAttribute("user", user);
+
+    return "users/editUser";
+    }
+
+    @PostMapping("/users/edit/{uid}")
+    @Transactional
+    public String editUser(Model model, @PathVariable String uid, @RequestParam Map<String, String> editeduser, HttpServletResponse response) {
+        System.out.println("EDIT User " + uid);
+        Integer uidInt = Integer.parseInt(uid);
+
+        // Call the data access layer to find the user by uid
+        User user = userRepo.findByUid(uidInt).get(0);
+        user.setName(editeduser.get("name"));
+        user.setHeight(Integer.parseInt(editeduser.get("height")));
+        user.setWeight(Integer.parseInt(editeduser.get("weight")));
+        user.setColor(editeduser.get("color"));
+        user.setGpa(Double.parseDouble(editeduser.get("gpa")));
+
+        return "users/editedUser";
+    }
+    @PostMapping("/users/delete/{uid}")
+    @Transactional
+    public String deleteUser(Model model, @PathVariable String uid, @RequestParam Map<String, String> editeduser, HttpServletResponse response) {
+        System.out.println("DELETE User " + uid);
+        Integer uidInt = Integer.parseInt(uid);
+
+        // Call the data access layer to find the user by uid
+        User user = userRepo.findByUid(uidInt).get(0);
+        userRepo.delete(user);
+        return "users/deletedUser";
     }
 
     // data coming from form would be a PostMapping
@@ -48,9 +80,11 @@ public class UsersController {
         // get name, size, password from form ...
         System.out.println("ADD user");
         String newName = newuser.get("name");
-        String newPassword = newuser.get("password");
-        int newSize = Integer.parseInt(newuser.get("size"));
-        userRepo.save(new User(newName, newPassword, newSize));
+        int newHeight = Integer.parseInt(newuser.get("height"));
+        int newWeight = Integer.parseInt(newuser.get("weight"));
+        String newColor = newuser.get("color");
+        double newGpa = Double.parseDouble(newuser.get("gpa"));
+        userRepo.save(new User(newName, newHeight, newWeight, newColor, newGpa));
         response.setStatus(201);
         return "users/addedUser";
     }

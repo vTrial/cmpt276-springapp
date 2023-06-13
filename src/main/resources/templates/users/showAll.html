@@ -1,18 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Inspecting damages</title>
+    <style>
+        .user {
+            border: 3px solid black;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <body>
-    <h1>USERS</h1>
-    hello users!!!
-    <ul>
-        <li th:each="user:${users}">
-            <span th:text="${user.name}"></span>
-        </li>
-    </ul>
+    <div class="container-fluid">
+        <div class="row justify-content-left"></div>
+            <div class="col-md-1">
+                <div class="d-grid gap-2 mt-3">
+                    <form action="/mainpage.html">
+                        <input class="btn btn-secondary" type="submit" value="BACK"></input>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <h1 class="text-center mt-5 mb-4">
+                    Victim List
+                </h1>
+                <div th:each="user:${users}" class="mb-5">
+                    <div th:text="${'Name: ' + user.name}"></div>
+                    <div th:text="${'GPA: ' + user.gpa}"></div>
+                    <div th:styleappend="'margin-top:' + ${user.height} + 'px;'">
+                        <span class="user"  th:styleappend="'padding-top:' + ${user.height} + 'px; padding-right:' + ${user.weight * 1.0 / user.height * 100} + 'px;border-color:' + ${user.color}"></span>
+                    </div>
+                    <div class="d-flex mt-3 gap-2">
+                        <form th:action="@{/users/view/{uid}(uid=${user.uid})}" method="get">
+                            <button type="submit" class="btn btn-secondary">Edit user</button>
+                        </form>
+                        <form th:action="@{/users/delete/{uid}(uid=${user.uid})}" method="post">
+                            <button class="btn btn-danger" type="submit">Delete user</input>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
