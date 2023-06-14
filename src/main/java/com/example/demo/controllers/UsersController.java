@@ -64,7 +64,7 @@ public class UsersController {
     }
     @PostMapping("/users/delete/{uid}")
     @Transactional
-    public String deleteUser(Model model, @PathVariable String uid, @RequestParam Map<String, String> editeduser, HttpServletResponse response) {
+    public String deleteUser(@PathVariable String uid, HttpServletResponse response) {
         System.out.println("DELETE User " + uid);
         Integer uidInt = Integer.parseInt(uid);
 
@@ -72,6 +72,15 @@ public class UsersController {
         User user = userRepo.findByUid(uidInt).get(0);
         userRepo.delete(user);
         return "users/deletedUser";
+    }
+    @PostMapping("/users/deleteAll")
+    @Transactional
+    public String deleteAll(HttpServletResponse response) {
+        System.out.println("DELETE All");
+
+        // Call the data access layer to find the user by uid
+        userRepo.deleteAll();
+        return "users/deletedAll";
     }
 
     // data coming from form would be a PostMapping

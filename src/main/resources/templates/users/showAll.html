@@ -39,10 +39,13 @@
                             <button type="submit" class="btn btn-secondary">Edit user</button>
                         </form>
                         <form th:action="@{/users/delete/{uid}(uid=${user.uid})}" method="post">
-                            <button class="btn btn-danger" type="submit">Delete user</input>
+                            <button class="btn btn-danger" type="submit">Delete user</button>
                         </form>
                     </div>
                 </div>
+                <form action="/users/deleteAll" method="post">
+                    <button class="btn btn-danger" type="submit">Delete all users</button>
+                </form>
             </div>
         </div>
     </div>
